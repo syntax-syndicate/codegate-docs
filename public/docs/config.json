@@ -1,0 +1,13 @@
+{
+  "sidebar": [
+    {
+      "title": "Getting Started",
+      "items": [
+        {
+          "title": "Introduction",
+          "path": "getting-started.md"
+        },
+        {
+          "title": "Quick Start",
+          "path": "quick-start.md"
+        }
