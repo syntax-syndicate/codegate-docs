@@ -11,3 +11,37 @@
           "title": "Quick Start",
           "path": "quick-start.md"
         }
+      ]
+    },
+    {
+      "title": "Features",
+      "items": [
+        {
+          "title": "Secret Filtering",
+          "path": "features/secret-filtering.md"
+        },
+        {
+          "title": "Package Security",
+          "path": "features/package-security.md"
+        },
+        {
+          "title": "IDE Integration",
+          "path": "features/ide-integration.md"
+        }
+      ]
+    },
+    {
+      "title": "Configuration",
+      "items": [
+        {
+          "title": "Basic Configuration",
+          "path": "configuration/basic.md"
+        },
+        {
+          "title": "Advanced Options",
+          "path": "configuration/advanced.md"
+        }
+      ]
+    }
+  ]
+}
