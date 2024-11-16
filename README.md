@@ -2,9 +2,9 @@
 
 Landing page and documentation site for the CodeGate Project
 
-![Picture of website in Light mode]("images/light.png")
+![Picture of website in Light mode](./images/light.png)
 
-![Picture of website Dark Mode]("images/dark.png")
+![Picture of website in Dark mode](./images/dark.png)
 
 # React + Vite
 
