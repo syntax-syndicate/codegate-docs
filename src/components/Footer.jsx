@@ -65,7 +65,7 @@ export default function Footer() {
         
         <div className="mt-8 pt-8 border-t border-gray-200 dark:border-gray-700">
           <p className="text-center text-gray-600 dark:text-gray-400">
-            © {new Date().getFullYear()} CodeGate. All rights reserved.
+            © {new Date().getFullYear()} Stacklok. All rights reserved.
           </p>
         </div>
       </div>
