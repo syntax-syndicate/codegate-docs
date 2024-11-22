@@ -2,10 +2,7 @@ import typography from '@tailwindcss/typography';
 
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
   darkMode: 'class',
   theme: {
     extend: {
@@ -36,6 +33,13 @@ export default {
                 color: theme('colors.primary.700'),
               },
             },
+            /* Don't render the backticks in Markdown inline code */
+            'code::before': {
+              content: '""',
+            },
+            'code::after': {
+              content: '""',
+            },
           },
         },
         dark: {
@@ -52,7 +56,5 @@ export default {
       }),
     },
   },
-  plugins: [
-    typography,
-  ],
-}
+  plugins: [typography],
+};
