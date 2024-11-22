@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Navigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { tomorrow } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import DocSidebar from '../components/DocSidebar';
@@ -49,8 +50,9 @@ export default function Documentation() {
         <div className="max-w-4xl mx-auto">
           <article className="prose dark:prose-invert prose-lg max-w-none">
             <ReactMarkdown
+              remarkPlugins={[remarkGfm]}
               components={{
-                code({inline, className, children, ...props}) {
+                code({ inline, className, children, ...props }) {
                   const match = /language-(\w+)/.exec(className || '');
                   return !inline && match ? (
                     <SyntaxHighlighter
@@ -75,11 +77,12 @@ export default function Documentation() {
                 ul: (props) => <ul className="list-disc pl-6 mb-4 text-gray-700 dark:text-gray-300" {...props} />,
                 ol: (props) => <ol className="list-decimal pl-6 mb-4 text-gray-700 dark:text-gray-300" {...props} />,
                 a: (props) => (
-                  <a 
+                  <a
                     className="text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
                     {...props}
                   />
                 ),
+                table: (props) => <table className="table-auto w-auto text-gray-700 dark:text-gray-300" {...props} />,
               }}
             >
               {content}
