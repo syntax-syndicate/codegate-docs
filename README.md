@@ -1,16 +1,27 @@
-# Landing Page for CodeGate 
+# CodeGate docs
 
-Landing page and documentation site for the CodeGate Project
+This repository contains the public-facing docs for CodeGate, hosted at
+[https://docs.codegate.ai](https://docs.codegate.ai).
 
-![Picture of website in Light mode](./images/light.png)
+## Local Development
 
-![Picture of website in Dark mode](./images/dark.png)
+```bash
+npm install
+npm run start
+```
 
-# React + Vite
+This command starts a local development server and opens up a browser window.
+Most changes are reflected live without having to restart the server.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Build
 
-Currently, two official plugins are available:
+```bash
+npm run build
+```
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+This command generates static content into the `build` directory.
+
+## About
+
+This site is built with [Docusaurus](https://docusaurus.io/), a modern static
+website generator.
