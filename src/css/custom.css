@@ -4,7 +4,7 @@
  * work well for content-centric websites.
  */
 
-@import url('https://fonts.googleapis.com/css2?family=Figtree&family=Roboto+Mono&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Roboto+Mono:ital,wght@0,100..700;1,100..700&display=swap');
 
 /* You can override the default Infima variables here. */
 :root {
@@ -17,6 +17,7 @@
   --ifm-footer-title-color: #64748B;
   --ifm-footer-link-color: #334155;
   --ifm-footer-link-hover-color: #5058ff;
+  --ifm-navbar-link-color: #334155;
 
   --ifm-color-primary: #5058ff;
   --ifm-color-primary-dark: #2f38ff;
@@ -56,6 +57,16 @@ div[role='tabpanel'] {
   box-shadow: var(--ifm-global-shadow-lw);
 }
 
+.footer {
+  padding: 20px 16px 40px;
+}
+
+.footer .container {
+  margin: auto;
+  padding: 0;
+  max-width: 1200px;
+}
+
 .footer__title {
   text-transform: uppercase;
 }
@@ -68,30 +79,46 @@ div[role='tabpanel'] {
 }
 
 .footer__item {
-  font-size: 1rem;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.footer__item:not(:last-child) {
+  padding-bottom: 16px;
+}
+
+.footer__icon__custom {
+  padding: 0.25rem 12px;
+}
+
+.footer__link-item {
+  line-height: 24px;
+  --ifm-link-hover-decoration: none;
 }
 
 .footer__col:first-child {
-  max-width: 370px;
+  max-width: 400px;
   margin-right: auto;
 }
 
-
 .footer__col:last-child,
 .footer__col:nth-last-child(2) {
-  max-width: 150px;
+  max-width: 160px;
+  margin-right: 0px;
 }
 
 /**
- * Navbar icon classes
+ * Navbar & footer icon classes
  */
 .header-github-link::before {
   content: '';
-  width: 24px;
-  height: 24px;
-  display: flex;
-  background-color: var(--ifm-navbar-link-color);
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: rgb(51, 65, 85);
   mask-image: url('/img/github-brands-solid.svg');
+  mask-repeat: no-repeat;
   transition: background-color var(--ifm-transition-fast)
     var(--ifm-transition-timing-default);
 }
@@ -102,13 +129,15 @@ div[role='tabpanel'] {
 
 .header-discord-link::before {
   content: '';
-  width: 24px;
-  height: 24px;
-  display: flex;
-  background-color: var(--ifm-navbar-link-color);
+  width: 20px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: rgb(51, 65, 85);
   mask-image: url('/img/discord-brands-solid.svg');
   mask-repeat: no-repeat;
   mask-position: 0% 50%;
+  mask-repeat: no-repeat;
   transition: background-color var(--ifm-transition-fast)
     var(--ifm-transition-timing-default);
 }
@@ -119,16 +148,36 @@ div[role='tabpanel'] {
 
 .header-youtube-link::before {
   content: '';
-  width: 24px;
-  height: 24px;
-  display: flex;
-  background-color: var(--ifm-navbar-link-color);
+  width: 18px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: rgb(51, 65, 85);
   mask-image: url('/img/youtube-brands-solid.svg');
   mask-position: 0% 50%;
+  mask-repeat: no-repeat;
   transition: background-color var(--ifm-transition-fast)
     var(--ifm-transition-timing-default);
 }
 
 .header-youtube-link:hover::before {
+  background-color: var(--ifm-navbar-link-hover-color);
+}
+
+.header-stacklok-link::before {
+  content: '';
+  width: 18px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: middle;
+  background-color: rgb(51, 65, 85);
+  mask-image: url('/img/stacklok-icon-black.svg');;
+  mask-position: 0% 50%;
+  mask-repeat: no-repeat;
+  transition: background-color var(--ifm-transition-fast)
+    var(--ifm-transition-timing-default);
+}
+
+.header-stacklok-link:hover::before {
   background-color: var(--ifm-navbar-link-hover-color);
 }

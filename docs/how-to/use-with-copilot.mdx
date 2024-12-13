@@ -1,11 +1,12 @@
 ---
 title: Use CodeGate with GitHub Copilot
 description: Configure the Copilot IDE plugin
-sidebar_position: 100
+sidebar_label: Integrate with GitHub Copilot
+sidebar_position: 110
 ---
 
-import Tabs from '@theme/Tabs';
-import TabItem from '@theme/TabItem';
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 [GitHub Copilot](https://github.com/features/copilot) is an AI coding assistant
 developed by GitHub and OpenAI. The Copilot plugin works with Visual Studio Code
@@ -59,6 +60,15 @@ more information about mapping a volume.
 Add CodeGate's generated CA certificate to your system's trust store. The
 certificate file is located at `certs/ca.crt` within your CodeGate data volume.
 
+:::note
+
+Wait 20-30 seconds for the CodeGate container to finish initializing before
+starting this step. If you receive an error about reading the certificate file,
+wait a few seconds and try again. If this persists, check the CodeGate container
+logs for errors.
+
+:::
+
 <Tabs groupId="os">
 <TabItem value="macos" label="macOS" default>
 Run the following command from a terminal:
@@ -98,8 +108,8 @@ sudo update-ca-trust
 </TabItem>
 </Tabs>
 
-If you customized the local path to your CodeGate persistent volume, replace
-`./codegate_volume/` in the command with your path.
+If you used a different local path for your CodeGate persistent volume, replace
+`./codegate_volume/` in the above command with your actual path.
 
 ## Configure your IDE to proxy traffic through CodeGate
 
@@ -107,12 +117,19 @@ Finally, configure your IDE to use CodeGate as an HTTP proxy.
 
 <Tabs groupId="ide">
 <TabItem value="vscode" label="VS Code" default>
-Open your VS Code user settings file using the **Preferences: Open User Settings (JSON)**
-command in the Command Palette (`⇧⌘P` or `Ctrl+Shift+P`) and add the following
-settings:
+Open your VS Code user settings file. To do this, open the Command Pallet
+(<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on macOS or 
+<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on Windows/Linux) and search for
+the **Preferences: Open User Settings (JSON)** command.
+
+Append the following settings to your configuration:
 
 ```json title="settings.json"
 {
+  // ... Existing settings ... //
+
+  // Note: you may need to add a comma after the last line of your existing settings if not already present
+
   "http.proxy": "https://localhost:8990",
   "http.proxyStrictSSL": true,
   "http.proxySupport": "on",
@@ -137,12 +154,15 @@ Coming soon!
 
 ## Verify configuration
 
-To verify that you've successfully connected Copilot to CodeGate, open the
-Copilot chat and type `codegate-version`. You should receive a response like
-this:
+To verify that CodeGate is receiving Copilot traffic as expected, open the
+Copilot chat and type `What do you know about CodeGate?`. You should receive a
+response that starts like this:
 
 ```plan
-Codegate version: 0.1.0
+CodeGate is a security-focused AI assistant designed to help with software
+security, package analysis, and providing guidance on secure coding practices.
+
+...
 ```
 
 Try asking CodeGate about a known malicious Python package:

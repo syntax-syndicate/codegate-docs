@@ -44,7 +44,6 @@ const config: Config = {
         docs: {
           routeBasePath: '/',
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
           // Remove this to remove the "edit this page" links.
           editUrl: 'https://github.com/stacklok/codegate-docs/tree/main/',
         },
@@ -118,9 +117,9 @@ const config: Config = {
             },
             {
               html: `<div style="display: flex; padding: 20px 0px;">
-                       <a href="https://youtube.com/@stacklok" target="_blank" class="navbar__item navbar__link header-youtube-link" style="padding-left: 0px;"></a>
-                       <a href="https://github.com/stacklok/codegate" target="_blank" class="navbar__item navbar__link header-github-link"></a>
-                       <a href="https://discord.gg/stacklok" target="_blank" class="navbar__item navbar__link header-discord-link"></a>
+                       <a href="https://youtube.com/@stacklok" target="_blank" class="footer__icon__custom navbar__link header-youtube-link" style="padding-left: 0px;"></a>
+                       <a href="https://github.com/stacklok/codegate" target="_blank" class="footer__icon__custom navbar__link header-github-link"></a>
+                       <a href="https://discord.gg/stacklok" target="_blank" class="footer__icon__custom navbar__link header-discord-link"></a>
                      </div>`,
             },
           ],
@@ -129,20 +128,16 @@ const config: Config = {
           title: 'Links',
           items: [
             {
-              label: 'Stacklok',
-              href: 'https://www.stacklok.com',
+              html: '<a href="https://www.stacklok.com" target="_blank" class="navbar__link header-stacklok-link"">&nbsp;&nbsp;Stacklok</a>'
             },
             {
-              label: 'YouTube',
-              href: 'https://youtube.com/@stacklok',
+              html: '<a href="https://youtube.com/@stacklok" target="_blank" class="navbar__link header-youtube-link"">&nbsp;&nbsp;YouTube</a>'
             },
             {
-              label: 'GitHub',
-              href: 'https://github.com/stacklok/codegate',
+              html: '<a href="https://github.com/stacklok/codegate" target="_blank" class="navbar__link header-github-link">&nbsp;&nbsp;GitHub</a>'
             },
             {
-              label: 'Discord',
-              href: 'https://discord.gg/stacklok',
+              html: '<a href="https://discord.gg/stacklok" target="_blank" class="navbar__link header-discord-link">&nbsp;&nbsp;Discord</a>'
             },
           ],
         },
@@ -160,10 +155,10 @@ const config: Config = {
           ],
         },
       ],
-      copyright: `<hr>
+      copyright: `<hr style="margin: 24px 0px 40px;">
                   <div style="display: flex;">
                     <div>Copyright © ${new Date().getFullYear()} CodeGate, All Rights Reserved</div>
-                    <div style="margin-left: auto; text-transform: uppercase; font-size: 14px; font-weight: 600;">Powered by <img src="/img/stacklok-logo-black.svg" height="24px" style="vertical-align: middle; margin-left: 1rem;" /></div>
+                    <div style="margin-left: auto; text-transform: uppercase; font-size: 14px; font-weight: 600;">Powered by <img src="/img/stacklok-logo-black.svg" height="24px" style="margin-left: 1rem;" /></div>
                   </div>`,
     },
     prism: {
@@ -175,17 +170,7 @@ const config: Config = {
       theme: { light: 'neutral', dark: 'dark' },
       options: {
         themeVariables: {
-          /* fontFamily: 'Inter, system-ui, sans-serif',
-          primaryColor: '#026598',
-          background: '#111827',
-          darkMode: true,
-          secondaryColor: '#0383c6',
-          primaryTextColor: '#d1d5db',
-          primaryBorderColor: '#d1d5db',
-          lineColor: '#d1d5db',
-          edgeLabelBackground: '#111827',
-          noteBkgColor: '#01476a',
-          noteTextColor: '#d1d5db', */
+          fontFamily: 'Figtree, system-ui, sans-serif'
         },
       },
     },
