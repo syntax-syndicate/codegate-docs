@@ -1,12 +1,12 @@
 ---
 title: Use CodeGate with GitHub Copilot
 description: Configure the Copilot IDE plugin
-sidebar_label: Integrate with GitHub Copilot
+sidebar_label: Use with GitHub Copilot
 sidebar_position: 110
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
 [GitHub Copilot](https://github.com/features/copilot) is an AI coding assistant
 developed by GitHub and OpenAI. The Copilot plugin works with Visual Studio Code
@@ -19,8 +19,8 @@ installed the IDE extension.
 
 :::
 
-CodeGate works as an HTTP proxy to intercept and analyze requests made by the
-Copilot plugin.
+CodeGate works as an HTTP proxy to intercept and modify traffic between GitHub
+Copilot and your IDE.
 
 ```mermaid
 flowchart LR
@@ -31,34 +31,115 @@ flowchart LR
   CodeGate -->|"https<br>443"| Copilot
 ```
 
-## Prerequisites
+## Launch parameters
 
-Your system must trust CodeGate's self-signed certificate to maintain a secure
-end-to-end connection with Copilot. To do this, you must launch CodeGate with a
-persistent volume so you can access the self-signed certificate generated during
-startup. This also prevents the certificate from changing on each restart.
+Several additional Docker parameters are required for Copilot support when you
+launch CodeGate. If already have CodeGate running, remove the existing container
+first with `docker stop codegate && docker rm codegate`.
 
-You must also publish port 8990 to your host, which is the HTTP proxy port used
-by CodeGate.
+1. The CodeGate HTTP proxy port (8990) must be mapped to your host along with
+   the CodeGate API and UI ports.\
+   Add `-p 8990:8990` to your `docker run` command.
 
-This example connects a directory named `codegate_volume` in your current
-working path to `/app/codegate_volume` inside the container and maps the
-container's proxy port to the default 8990 on your host:
+1. CodeGate generates a self-signed Certificate Authority (CA) at startup which
+   is used to maintain a secure end-to-end connection with Copilot.
 
+   To prevent the certificate from changing on each restart, launch CodeGate
+   with a persistent data volume. To do this, add a `--mount` parameter to your
+   `docker run` command:
+
+   `--mount type=volume,src=codegate_volume,dst=/app/codegate_volume`
+
+This example maps the container's proxy port to the default 8990 on your host
+and creates a volume named `codegate_volume` mounted to `/app/codegate_volume`
+inside the container:
+
+<Tabs groupId="os">
+<TabItem value="macos" label="macOS / Linux" default>
 ```bash {2-3}
 docker run --name codegate -d -p 8989:8989 -p 9090:80 \
   -p 8990:8990 \
-  -v ./codegate_volume:/app/codegate_volume \
+  --mount type=volume,src=codegate_volume,dst=/app/codegate_volume \
+  ghcr.io/stacklok/codegate:latest
+```
+</TabItem>
+<TabItem value="windows" label="Windows (PowerShell)">
+```shell {2-3}
+docker run --name codegate -d -p 8989:8989 -p 9090:80 `
+  -p 8990:8990 `
+  --mount type=volume,src=codegate_volume,dst=/app/codegate_volume `
   ghcr.io/stacklok/codegate:latest
 ```
 
-See [Persisting dashboard data](./dashboard.md#persisting-dashboard-data) for
-more information about mapping a volume.
+</TabItem>
+</Tabs>
 
-## Trust the certificate
+## Trust the CodeGate CA certificate
 
-Add CodeGate's generated CA certificate to your system's trust store. The
-certificate file is located at `certs/ca.crt` within your CodeGate data volume.
+To establish a secure end-to-end connection between your IDE and CodeGate, you
+need to install CodeGate's generated CA certificate to your trust store.
+Decrypted traffic stays on your local machine and never leaves the CodeGate
+container unencrypted.
+
+<details>
+<summary>More about certificate security</summary>
+
+## Is this certificate safe to install on my machine?
+
+**Local-only:** CodeGate runs entirely on your machine within an isolated
+container, ensuring all data processing stays local without any external
+transmissions.
+
+**Secure certificate handling:** This custom CA is locally generated and
+managed. CodeGate developers have no access to it.
+
+**No external communications:** CodeGate is designed with no capability to call
+home or communicate with external servers, outside of those requested by the IDE
+or Agent.
+
+## Key security features
+
+### Per-domain certificate generation
+
+Instead of using wildcard certificates, CodeGate generates unique certificates
+for each domain. This approach minimizes security risks by limiting the impact
+of any single certificate compromise.
+
+### High-strength encryption with 4096-bit RSA keys
+
+CodeGate utilizes 4096-bit RSA keys for certificate authority operations,
+providing enhanced security compared to the standard 2048-bit keys. The
+increased key length significantly reduces the risk of brute-force attacks,
+ensuring long-term protection for your data. To balance performance, 2048-bit
+keys are used for the server certs.
+
+### Secure SSL/TLS configuration
+
+CodeGate's SSL context is configured to enforce the latest security standards,
+including strong cipher suites and disabling outdated protocols. This ensures
+secure and efficient encrypted communications.
+
+### Certificate caching and management
+
+Certificates are cached efficiently to optimize performance without compromising
+security. Additionally, mechanisms are in place to manage certificate lifecycles
+and prevent resource exhaustion.
+
+</details>
+
+### Install certificate from the UI
+
+The easiest way to retrieve and install the CodeGate certificate is from the
+CodeGate web dashboard. Open the CodeGate dashboard in your browser:
+http://localhost:9090
+
+From the **Certificates** menu choose **Download**, then click the **Download
+Certificate** button. Follow the OS-specific instructions on the page to import
+the certificate to your trust store.
+
+### Install certificate from the CLI
+
+You can also install the CA certificate using the CLI.
 
 :::note
 
@@ -71,20 +152,20 @@ logs for errors.
 
 <Tabs groupId="os">
 <TabItem value="macos" label="macOS" default>
-Run the following command from a terminal:
-
 ```bash
-sudo security add-trusted-cert -d -r trustRoot \
-  -k /Library/Keychains/System.keychain \
-  ./codegate_volume/certs/ca.crt
+docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
+security add-trusted-cert -r trustRoot -k ~/Library/Keychains/login.keychain ./codegate.crt
 ```
+
+Enter your password when prompted.
 
 </TabItem>
 <TabItem value="windows" label="Windows">
-Execute this command from an elevated PowerShell prompt:
+Run the following from a PowerShell prompt:
 
 ```powershell
-Import-Certificate -FilePath ".\codegate_volume\certs\ca.crt" -CertStoreLocation Cert:\LocalMachine\Root
+docker cp codegate:/app/codegate_volume/certs/ca.crt .\codegate.crt
+Import-Certificate -FilePath ".\codegate.crt" -CertStoreLocation Cert:\CurrentUser\Root
 ```
 
 </TabItem>
@@ -94,22 +175,21 @@ Run the following commands from a terminal, depending on your distribution.
 Ubuntu/Debian based distributions:
 
 ```bash
-sudo cp ./codegate_volume/certs/ca.crt /usr/local/share/ca-certificates/codegate.crt
+docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
+sudo cp ./codegate.crt /usr/local/share/ca-certificates/codegate.crt
 sudo update-ca-certificates
 ```
 
 RHEL/Fedora and other Enterprise Linux distributions:
 
 ```bash
-sudo cp ./codegate_volume/certs/ca.crt /etc/pki/ca-trust/source/anchors/codegate.pem
+docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
+sudo cp ./codegate.crt /etc/pki/ca-trust/source/anchors/codegate.pem
 sudo update-ca-trust
 ```
 
 </TabItem>
 </Tabs>
-
-If you used a different local path for your CodeGate persistent volume, replace
-`./codegate_volume/` in the above command with your actual path.
 
 ## Configure your IDE to proxy traffic through CodeGate
 
@@ -117,10 +197,9 @@ Finally, configure your IDE to use CodeGate as an HTTP proxy.
 
 <Tabs groupId="ide">
 <TabItem value="vscode" label="VS Code" default>
-Open your VS Code user settings file. To do this, open the Command Pallet
-(<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on macOS or 
-<kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on Windows/Linux) and search for
-the **Preferences: Open User Settings (JSON)** command.
+In VS Code, open the Command Pallet (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
+on macOS or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on Windows/Linux) and
+search for the **Preferences: Open User Settings (JSON)** command.
 
 Append the following settings to your configuration:
 
@@ -147,10 +226,13 @@ Append the following settings to your configuration:
 <TabItem value="jetbrains" label="JetBrains" default>
 Coming soon!
 </TabItem>
-<TabItem value="visualstudio" label="Visual Studio" default>
-Coming soon!
-</TabItem>
 </Tabs>
+
+:::note
+
+Restart your IDE after adding the proxy configuration.
+
+:::
 
 ## Verify configuration
 
@@ -158,7 +240,7 @@ To verify that CodeGate is receiving Copilot traffic as expected, open the
 Copilot chat and type `What do you know about CodeGate?`. You should receive a
 response that starts like this:
 
-```plan
+```plan title="Copilot chat"
 CodeGate is a security-focused AI assistant designed to help with software
 security, package analysis, and providing guidance on secure coding practices.
 
@@ -167,14 +249,14 @@ security, package analysis, and providing guidance on secure coding practices.
 
 Try asking CodeGate about a known malicious Python package:
 
-```plain
+```plain title="Copilot chat"
 Tell me how to use the invokehttp package from PyPI
 ```
 
 CodeGate responds with a warning and a link to the Stacklok Insight report about
 this package:
 
-```plain
+```plain title="Copilot chat"
 Warning: CodeGate detected one or more malicious or archived packages.
 
 Package: https://insight.stacklok.com/pypi/invokehttp
@@ -196,3 +278,28 @@ Learn more about how to customize CodeGate and access the web dashboard:
 
 - [Configure CodeGate](./configure.md)
 - [Access the dashboard](./dashboard.md)
+
+## Remove CodeGate
+
+If you decide to stop using CodeGate, follow these steps to remove it and revert
+your environment.
+
+import RemoveCert from '../partials/_remove-cert.mdx';
+
+1. Remove the proxy settings from your IDE configuration.
+
+1. Remove the CodeGate CA certificate from your trust store:
+
+   <RemoveCert />
+
+1. Stop and remove the CodeGate container:
+
+   ```bash
+   docker stop codegate && docker rm codegate
+   ```
+
+1. Delete the persistent volume:
+
+   ```bash
+   docker volume rm codegate_volume
+   ```

@@ -51,6 +51,10 @@ const config: Config = {
         theme: {
           customCss: './src/css/custom.css',
         },
+        gtag: {
+          trackingID: 'G-WYFTM4LMCM',
+          anonymizeIP: true,
+        },
       } satisfies Preset.Options,
     ],
   ],
@@ -82,7 +86,13 @@ const config: Config = {
           type: 'doc',
           position: 'left',
           docId: 'quickstart',
-          label: 'Quickstart',
+          label: 'Quickstart (Copilot)',
+        },
+        {
+          type: 'doc',
+          position: 'left',
+          docId: 'quickstart-continue',
+          label: 'Quickstart (Continue)',
         },
         {
           href: 'https://youtube.com/@stacklok',
