@@ -35,6 +35,12 @@ CodeGate works with the following AI model providers through Continue:
     Install the plugin using the **Install** link on the Marketplace page or search
     for "Continue" in the Extensions panel within VS Code.
 
+    You can also install from the CLI:
+
+    ```bash
+    code --install-extension Continue.continue
+    ```
+
     If you need help, see
     [Managing Extensions](https://code.visualstudio.com/docs/editor/extension-marketplace)
     in the VS Code documentation.
@@ -83,11 +89,11 @@ To configure Continue to send requests through CodeGate:
    your system as the base URL for your LLM API, instead of the default.
 
    ```json
-   "apiBase": "http://127.0.0.1:8989/<provider>/"
+   "apiBase": "http://127.0.0.1:8989/<provider>"
    ```
 
-   Replace `/<provider>/` with one of: `/anthropic/`, `/ollama/`, `/openai/`, or
-   `/vllm/` to match your LLM provider.
+   Replace `/<provider>` with one of: `/anthropic`, `/ollama`, `/openai`, or
+   `/vllm` to match your LLM provider.
 
    If you used a different API port when launching the CodeGate container,
    replace `8989` with your custom port number.
@@ -114,17 +120,18 @@ for VS Code and JetBrains IDEs.
       "title": "CodeGate-Ollama",
       "provider": "ollama",
       "model": "MODEL_NAME",
-      "apiBase": "http://localhost:8989/ollama/"
+      "apiBase": "http://localhost:8989/ollama"
     }
   ],
   "modelRoles": {
-    "default": "CodeGate-Ollama"
+    "default": "CodeGate-Ollama",
+    "summarize": "CodeGate-Ollama"
   },
   "tabAutocompleteModel": {
     "title": "CodeGate-Ollama",
     "provider": "ollama",
     "model": "MODEL_NAME",
-    "apiBase": "http://localhost:8989/ollama/"
+    "apiBase": "http://localhost:8989/ollama"
   }
 }
 ```
@@ -143,18 +150,19 @@ Replace `MODEL_NAME` with the name of a model you have installed locally using
       "provider": "anthropic",
       "model": "MODEL_NAME",
       "apiKey": "YOUR_API_KEY",
-      "apiBase": "http://localhost:8989/anthropic/"
+      "apiBase": "http://localhost:8989/anthropic"
     }
   ],
   "modelRoles": {
-    "default": "CodeGate-Anthropic"
+    "default": "CodeGate-Anthropic",
+    "summarize": "CodeGate-Anthropic"
   },
   "tabAutocompleteModel": {
     "title": "CodeGate-Anthropic",
     "provider": "anthropic",
     "model": "MODEL_NAME",
     "apiKey": "YOUR_API_KEY",
-    "apiBase": "http://localhost:8989/anthropic/"
+    "apiBase": "http://localhost:8989/anthropic"
   }
 }
 ```
@@ -174,18 +182,19 @@ Replace `MODEL_NAME` with the Anthropic model you want to use, such as
       "provider": "openai",
       "model": "MODEL_NAME",
       "apiKey": "YOUR_API_KEY",
-      "apiBase": "http://localhost:8989/openai/"
+      "apiBase": "http://localhost:8989/openai"
     }
   ],
   "modelRoles": {
-    "default": "CodeGate-OpenAI"
+    "default": "CodeGate-OpenAI",
+    "summarize": "CodeGate-OpenAI"
   },
   "tabAutocompleteModel": {
     "title": "CodeGate-OpenAI",
     "provider": "openai",
     "model": "MODEL_NAME",
     "apiKey": "YOUR_API_KEY",
-    "apiBase": "http://localhost:8989/openai/"
+    "apiBase": "http://localhost:8989/openai"
   }
 }
 ```
@@ -205,18 +214,19 @@ and `YOUR_API_KEY` with your
       "provider": "vllm",
       "model": "MODEL_NAME",
       "apiKey": "YOUR_API_KEY",
-      "apiBase": "http://localhost:8989/vllm/"
+      "apiBase": "http://localhost:8989/vllm"
     }
   ],
   "modelRoles": {
-    "default": "CodeGate-vLLM"
+    "default": "CodeGate-vLLM",
+    "summarize": "CodeGate-vLLM"
   },
   "tabAutocompleteModel": {
     "title": "CodeGate-vLLM",
     "provider": "vllm",
     "model": "MODEL_NAME",
     "apiKey": "YOUR_API_KEY",
-    "apiBase": "http://localhost:8989/vllm/"
+    "apiBase": "http://localhost:8989/vllm"
   }
 }
 ```
@@ -239,17 +249,18 @@ from both sections.
       "title": "CodeGate-llama.cpp",
       "provider": "openai",
       "model": "MODEL_NAME",
-      "apiBase": "http://localhost:8989/llamacpp/"
+      "apiBase": "http://localhost:8989/llamacpp"
     }
   ],
   "modelRoles": {
-    "default": "CodeGate-llama.cpp"
+    "default": "CodeGate-llama.cpp",
+    "summarize": "CodeGate-llama.cpp"
   },
   "tabAutocompleteModel": {
     "title": "CodeGate-llama.cpp",
     "provider": "openai",
     "model": "MODEL_NAME",
-    "apiBase": "http://localhost:8989/llamacpp/"
+    "apiBase": "http://localhost:8989/llamacpp"
   }
 }
 ```
