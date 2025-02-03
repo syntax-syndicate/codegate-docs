@@ -12,10 +12,19 @@ import ThemedImage from '@theme/ThemedImage';
 
 [GitHub Copilot](https://github.com/features/copilot) is an AI coding assistant
 developed by GitHub and OpenAI. The Copilot plugin works with Visual Studio Code
-(VS Code). Support for JetBrains is
-[coming soon](https://github.com/stacklok/codegate/issues/383).
+(VS Code) and JetBrains IDEs.
 
 :::note
+
+Currently, CodeGate only works with Copilot in VS Code. JetBrains IDEs do not
+support HTTPS proxy configurations. If you would like to use CodeGate with
+Copilot in JetBrains IDEs, please add a :+1: to
+[this issue](https://github.com/stacklok/codegate/issues/383) or let us know on
+[Discord](https://discord.gg/stacklok).
+
+:::
+
+:::info
 
 This guide assumes you have an active subscription to GitHub Copilot and have
 installed the IDE extension.
@@ -132,15 +141,14 @@ and prevent resource exhaustion.
 
 </details>
 
-### Install certificate from the UI
+### Install certificate from the dashboard
 
-The easiest way to retrieve and install the CodeGate certificate is from the
-CodeGate web dashboard. Open the CodeGate dashboard in your browser:
-http://localhost:9090
+You can download the CodeGate CA certificate file from the CodeGate dashboard.
+Open the dashboard in your browser: http://localhost:9090
 
-From the **Certificates** menu choose **Download**, then click the **Download
-Certificate** button. Follow the OS-specific instructions on the page to import
-the certificate to your trust store.
+From the **Certificates** menu choose **Download certificates**, then click the
+**Download certificate** button. Follow the OS-specific instructions on the page
+to import the certificate to your trust store.
 
 ### Install certificate from the CLI
 
@@ -157,9 +165,11 @@ logs for errors.
 
 <Tabs groupId="os">
 <TabItem value="macos" label="macOS" default>
+Run the following from a terminal:
+
 ```bash
 docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
-security add-trusted-cert -r trustRoot -k ~/Library/Keychains/login.keychain ./codegate.crt
+security add-trusted-cert -r trustRoot -p ssl -p basic -k ~/Library/Keychains/login.keychain ./codegate.crt
 ```
 
 Enter your password when prompted.
@@ -175,33 +185,24 @@ Import-Certificate -FilePath ".\codegate.crt" -CertStoreLocation Cert:\CurrentUs
 
 </TabItem>
 <TabItem value="linux" label="Linux">
-Run the following commands from a terminal, depending on your distribution.
+Prerequisite: the `certutil` tool must be available on your system.
+- Ubuntu/Debian: `sudo apt install libnss3-tools`
+- RHEL/Fedora: `sudo dnf install nss-tools`
 
-Ubuntu/Debian based distributions:
-
-```bash
-docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
-sudo cp ./codegate.crt /usr/local/share/ca-certificates/codegate.crt
-sudo update-ca-certificates
-```
-
-RHEL/Fedora and other Enterprise Linux distributions:
+Run the following from a terminal:
 
 ```bash
 docker cp codegate:/app/codegate_volume/certs/ca.crt ./codegate.crt
-sudo cp ./codegate.crt /etc/pki/ca-trust/source/anchors/codegate.pem
-sudo update-ca-trust
+certutil -d sql:$HOME/.pki/nssdb -A -t "C,," -n CodeGate-CA -i ./codegate.crt
 ```
 
 </TabItem>
 </Tabs>
 
-## Configure your IDE to proxy traffic through CodeGate
+## Configure VS Code
 
-Finally, configure your IDE to use CodeGate as an HTTP proxy.
+Finally, configure VS Code to use CodeGate as an HTTP proxy.
 
-<Tabs groupId="ide">
-<TabItem value="vscode" label="VS Code" default>
 In VS Code, open the Command Palette (<kbd>⌘</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
 on macOS or <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd> on Windows/Linux) and
 search for the **Preferences: Open User Settings (JSON)** command.
@@ -226,12 +227,6 @@ Append the following settings to your configuration:
   }
 }
 ```
-
-</TabItem>
-<TabItem value="jetbrains" label="JetBrains" default>
-Support for JetBrains is [coming soon](https://github.com/stacklok/codegate/issues/383).
-</TabItem>
-</Tabs>
 
 ## Verify configuration
 
