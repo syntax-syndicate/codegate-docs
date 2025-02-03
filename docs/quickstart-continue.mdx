@@ -1,7 +1,7 @@
 ---
-title: Quickstart guide - Continue
-description: Get up and running with CodeGate and Continue
-sidebar_label: Quickstart - Continue
+title: Quickstart guide - Continue and Ollama
+description: Get up and running with CodeGate, Continue, and Ollama
+sidebar_label: Quickstart - Continue + Ollama
 sidebar_position: 10
 ---
 
@@ -12,8 +12,8 @@ import ThemedImage from '@theme/ThemedImage';
 
 This guide will get you up and running with CodeGate in just a few minutes using
 Visual Studio Code, the open source Continue AI assistant, and a locally-hosted
-LLM. By the end, you'll learn how CodeGate helps protect your privacy and
-improve the security of your applications.
+LLM using Ollama. By the end, you'll learn how CodeGate helps protect your
+privacy and improve the security of your applications.
 
 :::info
 
@@ -22,7 +22,7 @@ through Continue. In this tutorial, you'll use Ollama to run a code generation
 model on your local machine.
 
 If you have access to a provider like Anthropic or OpenAI, see
-[Use CodeGate with Continue](./how-to/use-with-continue.mdx) for complete
+[Use CodeGate with Continue](./integrations/continue.mdx) for complete
 configuration details, then skip ahead to
 [Explore CodeGate's features](#explore-codegates-features) in this tutorial.
 
@@ -55,7 +55,7 @@ Download and run the container using Docker:
 
 ```bash
 docker pull ghcr.io/stacklok/codegate:latest
-docker run --name codegate -d -p 8989:8989 -p 9090:9090 --restart unless-stopped ghcr.io/stacklok/codegate:latest
+docker run --name codegate -d -p 8989:8989 -p 9090:9090 --mount type=volume,src=codegate_volume,dst=/app/codegate_volume --restart unless-stopped ghcr.io/stacklok/codegate:latest
 ```
 
 This pulls the latest CodeGate image from the GitHub Container Registry and
@@ -261,7 +261,7 @@ Check out the rest of the docs to learn more about
 [Features](./features/index.mdx).
 
 If you have access to a hosted LLM provider like Anthropic or OpenAI, see
-[Configure Continue to use CodeGate](./how-to/use-with-continue.mdx#configure-continue-to-use-codegate)
+[Configure Continue to use CodeGate](./integrations/continue.mdx#configure-continue-to-use-codegate)
 to learn how to use those instead of Ollama.
 
 Finally, we want to hear about your experiences using CodeGate. Join the

@@ -16,6 +16,7 @@ system when you launch CodeGate, for example:
 ```bash {2}
 docker run --name codegate -d -p 8989:8989 \
   -p 9090:9090 \
+  --mount type=volume,src=codegate_volume,dst=/app/codegate_volume \
   --restart unless-stopped ghcr.io/stacklok/codegate:latest
 ```
 
@@ -36,10 +37,9 @@ browser.
 
 ## Persisting dashboard data {#persisting-dashboard-data}
 
-To retain your prompt history and other dashboard metrics between restarts,
+To retain your prompt history and workspace configurations between restarts,
 mount a persistent
 [Docker volume](https://docs.docker.com/engine/storage/volumes/) to the CodeGate
-container. The volume destination must be `/app/codegate_volume` inside the
 container. This example creates a volume named `codegate_volume`:
 
 ```bash {2}
