@@ -1,14 +1,15 @@
 ---
-title: Configure CodeGate
+title: Advanced configuration
 description: Customizing CodeGate's application settings
-sidebar_position: 20
+sidebar_position: 30
 ---
 
 ## Customize CodeGate's behavior
 
-The CodeGate container runs with default settings to support Ollama, Anthropic,
-and OpenAI APIs with typical settings. To customize the behavior, you can add
-extra configuration parameters to the container as environment variables:
+The CodeGate container runs with defaults that work with supported LLM providers
+using typical settings. To customize CodeGate's application settings like
+provider endpoints and logging level, you can add extra configuration parameters
+to the container as environment variables:
 
 ```bash {2}
 docker run --name codegate -d -p 8989:8989 -p 9090:9090 \
@@ -31,22 +32,13 @@ CodeGate supports the following parameters:
 | `CODEGATE_OPENAI_URL`    | `https://api.openai.com/v1`         | Specifies the OpenAI engine API endpoint URL.                                              |
 | `CODEGATE_VLLM_URL`      | `http://localhost:8000`             | Specifies the URL of the vLLM server to use.                                               |
 
-## Example: Use CodeGate with OpenRouter
+## Example: Use CodeGate with a remote Ollama server
 
-[OpenRouter](https://openrouter.ai/) is an interface to many large language
-models. CodeGate's vLLM provider works with OpenRouter's API when used with the
-Continue IDE plugin.
-
-To use OpenRouter, set the vLLM URL when you launch CodeGate:
+Set the Ollama server's URL when you launch CodeGate:
 
 ```bash {2}
 docker run --name codegate -d -p 8989:8989 -p 9090:9090 \
-  -e CODEGATE_VLLM_URL=https://openrouter.ai/api \
+  -e CODEGATE_OLLAMA_URL=https://my.ollama-server.example \
   --mount type=volume,src=codegate_volume,dst=/app/codegate_volume \
   --restart unless-stopped ghcr.io/stacklok/codegate
 ```
-
-Then,
-[configure the Continue IDE plugin](../integrations/continue.mdx?provider=vllm)
-to use CodeGate's vLLM endpoint (`http://localhost:8989/vllm`) along with the
-model you'd like to use and your OpenRouter API key.
